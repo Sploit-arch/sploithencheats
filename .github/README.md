@@ -27,9 +27,9 @@ While we make every effort to deliver high quality products, we do not guarantee
 
 ### Storage:
 - Use `FTP` to upload cheat files to:
-  - `/user/data/GoldHEN/cheats/json/`
-  - `/user/data/GoldHEN/cheats/shn/`
-  - `/user/data/GoldHEN/cheats/mc4/`
+  - `/user/data/SploitHEN/cheats/json/`
+  - `/user/data/SploitHEN/cheats/shn/`
+  - `/user/data/SploitHEN/cheats/mc4/`
 - Naming conversion for cheats that attach to eboot.bin process: `{titleid}_{version}.{format}`
   - e.g. `CUSA001234_01.01.json`
   - e.g. `CUSA001234_01.01.shn`
@@ -42,8 +42,3 @@ While we make every effort to deliver high quality products, we do not guarantee
 
 ### To Do:
 - Add more cheat formats.
-
-### Credits
-- [ctn123](https://github.com/ctn123)
-- [ShininGami](https://github.com/ScriptSK)
-- [SiSTRo](https://github.com/SiSTR0)
