@@ -1,0 +1,84 @@
+# A simple script to auto-generate .txt game lists for Cheats Manager
+# made by Bucanero
+
+name: Push commit
+
+on:
+  push:
+
+jobs:
+  gamelist:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout files
+        uses: actions/checkout@main
+
+      - name: Normalize json data
+        run: python .ci/normalize-json.py
+
+      - name: checkout
+        uses: actions/checkout@main
+        with:
+          repository: michaelrsweet/mxml
+          path: mxml
+
+      - name: configure
+        working-directory: mxml
+        env:
+          CC: /usr/bin/gcc
+        run: ./configure --enable-debug --enable-maintainer
+
+      - name: make
+        working-directory: mxml
+        run: |
+          sudo make
+          sudo make install
+
+      - name: Create list files
+        run: |
+          clang .ci/list_files.c
+          ./a.out json '"name"' > json.txt
+          ./a.out shn Game > shn.txt
+          mkdir xml
+          mv mc4/*.xml xml/
+          ./a.out xml Game > mc4.txt
+          mv xml/* mc4/
+          rmdir xml
+
+      - name: Setup git info
+        if: |
+          github.event_name == 'push' &&
+          github.repository == 'GoldHEN/GoldHEN_Cheat_Repository'
+        run: |
+          git config --global user.name 'kmeps4'
+          git config --global user.email 'kmeps4@users.noreply.github.com'
+
+      - name: Commit normalized json data
+        if: |
+          github.event_name == 'push' &&
+          github.repository == 'GoldHEN/GoldHEN_Cheat_Repository'
+        run: |
+          git add json/*.json
+          git commit -m "Normalize json data" || true
+
+      - name: Commit list files
+        if: |
+          github.event_name == 'push' &&
+          github.repository == 'GoldHEN/GoldHEN_Cheat_Repository'
+        run: |
+          mkdir -p misc
+          current=$(date '+%Y-%m-%d %H:%M:%S %A (%Z %z)')
+          msg="Cheat database version: $current"
+          git add json.txt
+          git add shn.txt
+          git add mc4.txt
+          echo $msg > misc/cheat_ver.txt
+          git add misc/cheat_ver.txt
+          git commit -m "Cheat lists update" || true
+
+      - name: Push to repository
+        if: |
+          github.event_name == 'push' &&
+          github.repository == 'GoldHEN/GoldHEN_Cheat_Repository'
+        run: git push || true
